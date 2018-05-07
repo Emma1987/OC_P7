@@ -9,6 +9,10 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Validator\ConstraintViolationList;
+use App\Exception\ResourceValidationException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ClientController extends FOSRestController
 {
@@ -57,5 +61,47 @@ class ClientController extends FOSRestController
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
+    }
+
+    /**
+     * @Rest\Post(
+     *    path = "/api/clients",
+     *    name = "client_create",
+     * )
+     * @Rest\View(StatusCode = 201)
+     * @ParamConverter("client", converter="fos_rest.request_body")
+     */
+    public function createAction(Request $request, Client $client, ConstraintViolationList $violations)
+    {
+        if (count($violations)) {
+            $message = "Les données envoyées sont incorrectes, merci de corriger les points suivants : ";
+            foreach ($violations as $violation) {
+                $message .= sprintf("Champs %s : %s ", $violation->getPropertyPath(), $violation->getMessage());
+            }
+
+            throw new ResourceValidationException($message);    
+        }
+
+        $this->entityManager->persist($client);
+        $this->entityManager->flush();
+
+        return $this->view(
+            $client, 
+            Response::HTTP_CREATED, 
+            ['Location' => $this->generateUrl('client_show', ['id' => $client->getId(), UrlGeneratorInterface::ABSOLUTE_URL])]
+        );
+    }
+
+    /**
+     * @Rest\Delete(
+     *    path = "/api/clients/{id}",
+     *    name = "client_delete",
+     * )
+     * @Rest\View(StatusCode = 200)
+     */
+    public function deleteAction(Request $request, Client $client)
+    {
+        $this->entityManager->remove($client);
+        $this->entityManager->flush();
     }
 }
