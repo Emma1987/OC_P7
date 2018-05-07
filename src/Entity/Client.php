@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ClientRepository")
@@ -21,13 +22,23 @@ class Client
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Assert\NotBlank(message="Cette valeur ne peut être nulle.")
+     * @Assert\Length(
+     *     max = 50, 
+     *     maxMessage = "Le prénom ne peut dépasser 50 caractères."
+     * )
      *
      * @Serializer\Groups({"list", "detail"})
      */
     private $firstname;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=50)
+     * @Assert\NotBlank(message="Cette valeur ne peut être nulle.")
+     * @Assert\Length(
+     *     max = 50, 
+     *     maxMessage = "Le nom ne peut dépasser 50 caractères."
+     * )
      *
      * @Serializer\Groups({"list", "detail"})
      */
@@ -35,6 +46,11 @@ class Client
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
+     * @Assert\NotBlank(message="Cette valeur ne peut être nulle.")
+     * @Assert\Length(
+     *     max = 100, 
+     *     maxMessage = "L'adresse ne peut dépasser 100 caractères."
+     * )
      *
      * @Serializer\Groups({"detail"})
      */
@@ -42,6 +58,14 @@ class Client
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Type(
+     *     type = "integer",
+     *     message = "Le code postal doit être au format numérique"
+     * )
+     * @Assert\Length(
+     *     max = 5, 
+     *     maxMessage = "Le code postal doit être composé de 5 chiffres"
+     * )
      *
      * @Serializer\Groups({"list", "detail"})
      */
@@ -49,13 +73,21 @@ class Client
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Assert\Length(
+     *     max = 50, 
+     *     maxMessage = "Le nom de la ville ne peut dépasser 50 caractères"
+     * )
      *
      * @Serializer\Groups({"list", "detail"})
      */
     private $city;
 
     /**
-     * @ORM\Column(type="string", length=13, nullable=true)
+     * @ORM\Column(type="string", length=10, nullable=true)
+     * @Assert\Regex(
+     *     pattern="#[0-9]{10}#",
+     *     match=true,
+     *     message="Le numéro de téléphone doit comporter 10 chiffres")
      *
      * @Serializer\Groups({"detail"})
      */
@@ -63,6 +95,7 @@ class Client
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @Assert\Email(message="L'email saisi n'est pas une adresse mail correcte.")
      *
      * @Serializer\Groups({"detail"})
      */
