@@ -57,14 +57,11 @@ class Client
     private $address;
 
     /**
-     * @ORM\Column(type="integer")
-     * @Assert\Type(
-     *     type = "integer",
-     *     message = "Le code postal doit être au format numérique"
-     * )
-     * @Assert\Length(
-     *     max = 5, 
-     *     maxMessage = "Le code postal doit être composé de 5 chiffres"
+     * @ORM\Column(type="string", length=5)
+     * @Assert\Regex(
+     *     pattern="#[0-9]{5}#",
+     *     match=true,
+     *     message="Le code postal doit comporter 5 chiffres"
      * )
      *
      * @Serializer\Groups({"list", "detail"})
@@ -87,7 +84,8 @@ class Client
      * @Assert\Regex(
      *     pattern="#[0-9]{10}#",
      *     match=true,
-     *     message="Le numéro de téléphone doit comporter 10 chiffres")
+     *     message="Le numéro de téléphone doit comporter 10 chiffres"
+     * )
      *
      * @Serializer\Groups({"detail"})
      */
@@ -142,12 +140,12 @@ class Client
         return $this;
     }
 
-    public function getPostCode(): ?int
+    public function getPostCode(): ?string
     {
         return $this->postCode;
     }
 
-    public function setPostCode(int $postCode): self
+    public function setPostCode(string $postCode): self
     {
         $this->postCode = $postCode;
 
