@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Client;
+use App\Entity\User;
 use FOS\RestBundle\Controller\FOSRestController;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -13,6 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Validator\ConstraintViolationList;
 use App\Exception\ResourceValidationException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Exception\NoClientFoundException;
 
 class ClientController extends FOSRestController
 {
@@ -35,7 +37,8 @@ class ClientController extends FOSRestController
      */
     public function listAction(Request $request)
     {
-        $clients = $this->entityManager->getRepository(Client::class)->findAll();
+        $user = $this->getUser();
+        $clients = $this->entityManager->getRepository(Client::class)->findBy(array('user' => $user));
 
         $data = $this->get('jms_serializer')->serialize($clients, 'json', SerializationContext::create()->setGroups(array('list')));
 
@@ -55,6 +58,10 @@ class ClientController extends FOSRestController
      */
     public function showAction(Request $request, Client $client)
     {
+        if ($client->getUser() !== $this->getUser() || empty($client)) {
+            throw new NoClientFoundException('Nous n\'avons pas trouvé ce client.');
+        }
+
         $data = $this->get('jms_serializer')->serialize($client, 'json', SerializationContext::create()->setGroups(array('detail')));
 
         $response = new Response($data);
@@ -83,6 +90,8 @@ class ClientController extends FOSRestController
         }
 
         $this->entityManager->persist($client);
+        $user = $this->getUser();
+        $user->addClient($client);
         $this->entityManager->flush();
 
         return $this->view(
@@ -101,6 +110,10 @@ class ClientController extends FOSRestController
      */
     public function deleteAction(Request $request, Client $client)
     {
+        if ($client->getUser() !== $this->getUser() || empty($client)) {
+            throw new NoClientFoundException('Nous n\'avons pas trouvé ce client.');
+        }
+
         $this->entityManager->remove($client);
         $this->entityManager->flush();
     }
