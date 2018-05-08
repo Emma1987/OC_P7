@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\TokenManager;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -19,9 +20,15 @@ class UserController extends FOSRestController
      */
     protected $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    /**
+     * Token Manager
+     */
+    protected $tokenManager;
+
+    public function __construct(EntityManagerInterface $entityManager, TokenManager $tokenManager)
     {
         $this->entityManager = $entityManager;
+        $this->tokenManager = $tokenManager;
     }
 
     /**
@@ -33,6 +40,8 @@ class UserController extends FOSRestController
      */
     public function loginAction()
     {
+        $user = $this->getUser();
+        return $token = $this->tokenManager->getJWT($user);
     }
 
     /**

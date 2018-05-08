@@ -23,4 +23,5 @@ fos_rest:
         exception_controller: 'fos_rest.exception.controller:showAction'
         codes:
            App\Exception\ResourceValidationException: 400
+           App\Exception\InvalidTokenException: 401
            App\Exception\NoClientFoundException: 404
