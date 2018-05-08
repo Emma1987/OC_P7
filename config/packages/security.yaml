@@ -9,7 +9,9 @@ security:
             entity:
                 class: App\Entity\User
                 property: username
-    
+        api_key_user_provider:
+            id: App\Security\ApiKeyUserProvider
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -20,17 +22,12 @@ security:
             json_login:
                 check_path: /login
             provider: main_user_provider
+        api:
+            pattern: ^/api
+            stateless: true
+            simple_preauth:
+                authenticator: App\Security\ApiKeyAuthenticator
+            provider: api_key_user_provider
 
-            # activate different ways to authenticate
-
-            # http_basic: true
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-
-            # form_login: true
-            # https://symfony.com/doc/current/security/form_login_setup.html
-
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/api, roles: ROLE_API_USER }
