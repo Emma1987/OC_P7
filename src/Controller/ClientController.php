@@ -4,19 +4,15 @@ namespace App\Controller;
 
 use App\Entity\Client;
 use App\Entity\User;
-use FOS\RestBundle\Controller\FOSRestController;
+use App\Controller\BilemoController;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use JMS\Serializer\SerializationContext;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Validator\ConstraintViolationList;
 use App\Exception\ResourceValidationException;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use App\Exception\NoClientFoundException;
 
-class ClientController extends FOSRestController
+class ClientController extends BilemoController
 {
     /**
      * Entity Manager
@@ -35,17 +31,12 @@ class ClientController extends FOSRestController
      * )
      * @Rest\View
      */
-    public function listAction(Request $request)
+    public function listAction()
     {
         $user = $this->getUser();
         $clients = $this->entityManager->getRepository(Client::class)->findBy(array('user' => $user));
 
-        $data = $this->get('jms_serializer')->serialize($clients, 'json', SerializationContext::create()->setGroups(array('list')));
-
-        $response = new Response($data);
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
+        return $this->getResponse($clients, ['list']);
     }
 
     /**
@@ -56,18 +47,13 @@ class ClientController extends FOSRestController
      * )
      * @Rest\View
      */
-    public function showAction(Request $request, Client $client)
+    public function showAction(Client $client = null)
     {
-        if ($client->getUser() !== $this->getUser() || empty($client)) {
+        if ($client === null || $client->getUser() !== $this->getUser()) {
             throw new NoClientFoundException('Nous n\'avons pas trouvé ce client.');
         }
 
-        $data = $this->get('jms_serializer')->serialize($client, 'json', SerializationContext::create()->setGroups(array('detail')));
-
-        $response = new Response($data);
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
+        return $this->getResponse($client, ['detail']);
     }
 
     /**
@@ -78,7 +64,7 @@ class ClientController extends FOSRestController
      * @Rest\View(StatusCode = 201)
      * @ParamConverter("client", converter="fos_rest.request_body")
      */
-    public function createAction(Request $request, Client $client, ConstraintViolationList $violations)
+    public function createAction(Client $client, ConstraintViolationList $violations)
     {
         if (count($violations)) {
             $message = "Les données envoyées sont incorrectes, merci de corriger les points suivants : ";
@@ -94,11 +80,7 @@ class ClientController extends FOSRestController
         $user->addClient($client);
         $this->entityManager->flush();
 
-        return $this->view(
-            $client, 
-            Response::HTTP_CREATED, 
-            ['Location' => $this->generateUrl('client_show', ['id' => $client->getId(), UrlGeneratorInterface::ABSOLUTE_URL])]
-        );
+        return $this->getResponse($client, ['detail']);
     }
 
     /**
@@ -108,9 +90,9 @@ class ClientController extends FOSRestController
      * )
      * @Rest\View(StatusCode = 200)
      */
-    public function deleteAction(Request $request, Client $client)
+    public function deleteAction(Client $client = null)
     {
-        if ($client->getUser() !== $this->getUser() || empty($client)) {
+        if ($client === null || $client->getUser() !== $this->getUser()) {
             throw new NoClientFoundException('Nous n\'avons pas trouvé ce client.');
         }
 

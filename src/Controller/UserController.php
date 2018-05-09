@@ -3,17 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Controller\BilemoController;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\TokenManager;
-use Symfony\Component\HttpFoundation\Request;
-use FOS\RestBundle\Controller\FOSRestController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Validator\ConstraintViolationList;
 use App\Exception\ResourceValidationException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
-class UserController extends FOSRestController
+class UserController extends BilemoController
 {
     /**
      * Entity Manager
