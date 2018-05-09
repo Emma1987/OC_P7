@@ -3,25 +3,31 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Controller\BilemoController;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use FOS\RestBundle\Controller\FOSRestController;
+use App\Service\TokenManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Validator\ConstraintViolationList;
 use App\Exception\ResourceValidationException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
-class UserController extends FOSRestController
+class UserController extends BilemoController
 {
     /**
      * Entity Manager
      */
     protected $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    /**
+     * Token Manager
+     */
+    protected $tokenManager;
+
+    public function __construct(EntityManagerInterface $entityManager, TokenManager $tokenManager)
     {
         $this->entityManager = $entityManager;
+        $this->tokenManager = $tokenManager;
     }
 
     /**
@@ -33,6 +39,8 @@ class UserController extends FOSRestController
      */
     public function loginAction()
     {
+        $user = $this->getUser();
+        return $token = $this->tokenManager->getJWT($user);
     }
 
     /**
