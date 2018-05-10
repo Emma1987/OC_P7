@@ -8,13 +8,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BilemoController extends FOSRestController
 {
-	/**
-	 * Serialize the response to send with serialization group
-	 * 
-	 * @param $data Data to serialize
-	 * @param $groups Serialization group
-	 */
-	public function getResponse($data, $statusCode, $groups = [])
+    /**
+     * Serialize the response to send with serialization group
+     * 
+     * @param $data Data to serialize
+     * @param $groups Serialization group
+     */
+    public function getResponse($data, $statusCode, $groups = [])
     {
         $serialize = $this->get('jms_serializer')->serialize($data, 'json', SerializationContext::create()->setGroups($groups));
 

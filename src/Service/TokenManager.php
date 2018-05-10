@@ -11,6 +11,7 @@ class TokenManager
 {
     /**
      * The key used to encode the JWT
+     * 
      * @var string
      */
     private $key;
@@ -22,7 +23,8 @@ class TokenManager
 
     /**
      * Encode client informations in JWT
-     * @param User $user
+     * 
+     * @param  User $user
      * @return string $token
      */
     public function getJWT(User $user)
@@ -44,7 +46,8 @@ class TokenManager
 
     /**
      * Verify the JWT
-     * @param string $token
+     * 
+     * @param  string $token
      * @return array $tokenInformations [Array of JWT informations]
      */
     public function decodeJWT($token)

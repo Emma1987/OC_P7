@@ -172,5 +172,5 @@ class UserController extends BilemoController
         }
 
         return $this->getResponse($user, Response::HTTP_OK, ['user_detail', 'client_list']);
-    }	
+    }
 }
