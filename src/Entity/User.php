@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -38,6 +39,8 @@ class User implements UserInterface
      *     max = 50, 
      *     maxMessage = "Votre nom d'utilisateur doit contenir au maximum 50 caractères"
      * )
+     *
+     * @Serializer\Groups("user_detail")
      */
     private $username;
 
@@ -56,6 +59,8 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=100)
      * @Assert\NotBlank(message="Cette valeur ne peut être nulle")
      * @Assert\Email(message="Merci d'entrer une adresse email valide")
+     *
+     * @Serializer\Groups("user_detail")
      */
     private $email;
 
@@ -67,6 +72,8 @@ class User implements UserInterface
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Client", mappedBy="user", cascade={"remove"})
      * @Assert\Valid()
+     *
+     * @Serializer\Groups("user_detail")
      */
     private $clients;
 
