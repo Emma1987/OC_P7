@@ -6,6 +6,7 @@ use App\Entity\Mobile;
 use App\Controller\BilemoController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class MobileController extends BilemoController
 {
@@ -31,6 +32,7 @@ class MobileController extends BilemoController
      *    requirements = {"id"="\d+"}
      * )
      * @Rest\View
+     * @Cache(expires="+1 hour", public=true)
      */
     public function showAction(Mobile $mobile)
     {

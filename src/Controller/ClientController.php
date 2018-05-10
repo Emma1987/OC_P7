@@ -11,9 +11,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Validator\ConstraintViolationList;
 use App\Exception\ResourceValidationException;
 use App\Exception\NoClientFoundException;
-use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class ClientController extends BilemoController
 {
@@ -49,6 +48,7 @@ class ClientController extends BilemoController
      *    requirements = {"id"="\d+"}
      * )
      * @Rest\View
+     * @Cache(expires="+1 hour", public=true)
      */
     public function showAction(Client $client = null)
     {
