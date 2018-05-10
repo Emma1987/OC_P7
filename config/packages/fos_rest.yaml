@@ -24,4 +24,5 @@ fos_rest:
         codes:
            App\Exception\ResourceValidationException: 400
            App\Exception\InvalidTokenException: 401
+           App\Exception\InvalidUserException: 401
            App\Exception\NoClientFoundException: 404

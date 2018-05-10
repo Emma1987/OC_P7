@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Mobile;
 use App\Controller\BilemoController;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpFoundation\Response;
 
 class MobileController extends BilemoController
 {
@@ -20,7 +21,7 @@ class MobileController extends BilemoController
         $entityManager = $this->getDoctrine()->getManager();
         $mobiles = $entityManager->getRepository(Mobile::class)->findAll();
 
-        return $this->getResponse($mobiles, ['list']);
+        return $this->getResponse($mobiles, Response::HTTP_OK, ['mobile_list']);
     }
 
     /**
@@ -33,6 +34,6 @@ class MobileController extends BilemoController
      */
     public function showAction(Mobile $mobile)
     {
-        return $this->getResponse($mobile, ['detail']);
+        return $this->getResponse($mobile, Response::HTTP_OK, ['mobile_detail']);
     }
 }

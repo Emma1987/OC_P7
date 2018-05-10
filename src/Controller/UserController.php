@@ -11,6 +11,8 @@ use Symfony\Component\Validator\ConstraintViolationList;
 use App\Exception\ResourceValidationException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use App\Exception\InvalidUserException;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends BilemoController
 {
@@ -78,8 +80,12 @@ class UserController extends BilemoController
      * )
      * @Rest\View
      */
-    public function showAction(User $user)
+    public function showAction(User $user = null)
     {
-        return $user;
+        if ($user === null || $user->getId() !== $this->getUser()->getId()) {
+            throw new InvalidUserException('L\'url semble incorrecte.');
+        }
+
+        return $this->getResponse($user, Response::HTTP_OK, ['user_detail', 'client_list']);
     }	
 }

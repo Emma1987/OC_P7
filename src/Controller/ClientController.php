@@ -11,6 +11,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Validator\ConstraintViolationList;
 use App\Exception\ResourceValidationException;
 use App\Exception\NoClientFoundException;
+use JMS\Serializer\SerializationContext;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ClientController extends BilemoController
 {
@@ -36,7 +39,7 @@ class ClientController extends BilemoController
         $user = $this->getUser();
         $clients = $this->entityManager->getRepository(Client::class)->findBy(array('user' => $user));
 
-        return $this->getResponse($clients, ['list']);
+        return $this->getResponse($clients, Response::HTTP_OK, ['client_list']);
     }
 
     /**
@@ -53,7 +56,7 @@ class ClientController extends BilemoController
             throw new NoClientFoundException('Nous n\'avons pas trouvé ce client.');
         }
 
-        return $this->getResponse($client, ['detail']);
+        return $this->getResponse($client, Response::HTTP_OK, ['client_detail']);
     }
 
     /**
@@ -80,7 +83,7 @@ class ClientController extends BilemoController
         $user->addClient($client);
         $this->entityManager->flush();
 
-        return $this->getResponse($client, ['detail']);
+        return $this->getResponse($client, Response::HTTP_CREATED, ['client_detail']);
     }
 
     /**
