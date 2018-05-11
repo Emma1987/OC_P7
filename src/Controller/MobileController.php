@@ -37,7 +37,7 @@ class MobileController extends BilemoController
      *     description="Get the mobiles list with success"
      * )
      * @SWG\Response(
-     *     response=403,
+     *     response=401,
      *     description="Need a valid token to access this request"
      * )
      */
@@ -80,7 +80,7 @@ class MobileController extends BilemoController
      *     description="Get the detail of a mobile with success"
      * )
      * @SWG\Response(
-     *     response=403,
+     *     response=401,
      *     description="Need a valide token to access this request"
      * )
      */
