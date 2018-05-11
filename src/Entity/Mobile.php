@@ -4,9 +4,28 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MobileRepository")
+ *
+ * @Hateoas\Relation(
+ *      "self",
+ *      href = @Hateoas\Route(
+ *          "mobile_show",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute = true
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups={"mobile_list"})
+ * )
+ * @Hateoas\Relation(
+ *      "mobile_list",
+ *      href = @Hateoas\Route(
+ *          "mobile_list",
+ *          absolute = true
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups={"mobile_detail"})
+ * )
  */
 class Mobile
 {
@@ -15,42 +34,42 @@ class Mobile
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      *
-     * @Serializer\Groups({"list"})
+     * @Serializer\Groups({"mobile_list"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=50)
      *
-     * @Serializer\Groups({"list", "detail"})
+     * @Serializer\Groups({"mobile_list", "mobile_detail"})
      */
     private $brand;
 
     /**
      * @ORM\Column(type="string", length=50)
      *
-     * @Serializer\Groups({"list", "detail"})
+     * @Serializer\Groups({"mobile_list", "mobile_detail"})
      */
     private $model;
 
     /**
      * @ORM\Column(type="string", length=10)
      *
-     * @Serializer\Groups({"list", "detail"})
+     * @Serializer\Groups({"mobile_list", "mobile_detail"})
      */
     private $memory;
 
     /**
      * @ORM\Column(type="string", length=255)
      *
-     * @Serializer\Groups({"detail"})
+     * @Serializer\Groups({"mobile_detail"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="integer")
      *
-     * @Serializer\Groups({"detail"})
+     * @Serializer\Groups({"mobile_detail"})
      */
     private $price;
 

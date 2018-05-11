@@ -22,6 +22,9 @@ security:
             json_login:
                 check_path: /login
             provider: main_user_provider
+        api_doc:
+            pattern: ^/api/doc
+            security: false
         api:
             pattern: ^/api
             stateless: true
