@@ -4,6 +4,7 @@ namespace App\Security;
 
 use App\Security\ApiKeyUserProvider;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -11,9 +12,10 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface;
+use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use App\Exception\InvalidTokenException;
 
-class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
+class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface, AuthenticationFailureHandlerInterface
 {
     public function createToken(Request $request, $providerKey)
     {
@@ -65,9 +67,6 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        return new Response(
-            strtr($exception->getMessageKey(), $exception->getMessageData()),
-            401
-        );
+        throw new InvalidTokenException('Ce token n\'est pas valide');
     }
 }
